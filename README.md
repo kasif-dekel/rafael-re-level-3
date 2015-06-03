@@ -110,6 +110,7 @@ So as you can see, after looking at the beautiful looking C code (=]) the follow
 # Meet Stalin
 
 This function does the operation (from section 2) on our input combined with the ```blobdata```, remember? 
+
 ![alt tag](http://oi59.tinypic.com/15gbfpj.jpg)
 
 And as a convert to C: 
@@ -165,6 +166,7 @@ int main() {
 so after we have the correct combination in order to correctly create the DLL, what's next ? debugging the qualify function!
 
 ![alt tag](http://oi61.tinypic.com/ww1cap.jpg)
+
 This is how the ```qualify``` function look like.. 
 
 Because this is already too long, what basically happens inside the third function call from qualify is comparison of input+4 and 2740310433063552.
