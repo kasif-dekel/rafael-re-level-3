@@ -140,7 +140,7 @@ sounds like a mess right ?
 
 there's a simple solution for it.. our input should be something that creates a DLL right ? so what we have to do is check which input will make stalin1 output ```0x4d5a9000``` for the first four iterations.
 
-think about it? why ```0x4d5a9000``` ? right, because this is the DLL first-four-bytes header ('M' 'Z' 0x90 0x00 as you know it).
+think about it? why ```0x4d5a9000``` ? right, because this is the DLL first-two-bytes header plus a part of another header in the PE format ('M' 'Z' as you know it).
 
 Those with sharp eyes already noticed that the second and third bytes of our input doesnt affect the output of stalin1, so its even easier!
 
