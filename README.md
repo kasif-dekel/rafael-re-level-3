@@ -39,7 +39,7 @@ Which revealed to be the ```SetUnhandledExceptionFilter```  - a WINAPI function,
 
 > After calling this function, if an exception occurs in a process that is not being debugged, and the exception makes it to the unhandled exception filter, that filter will call the exception filter function specified by the lpTopLevelExceptionFilter parameter.
 
-So, that means, as you can alreaday tell - the program sets the address ```0x402450``` as the function to be called if an exception occurs && the program is not being debugged.
+So, that means, as you can already tell - the program sets the address ```0x402450``` as the function to be called if an exception occurs && the program is not being debugged.
 
 Okay, your is guess right - this is an anti-debugging technique. 
 if we'll continue stepping the program - we'll eventually exit the program. 
