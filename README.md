@@ -9,7 +9,9 @@ Rafael are looking to hire reverse engineers and created this series of binary c
 
 # Level 3
 
-When you proceed to stage2 (level 1 is stage0.exe) you receive a PE file named ```stage2.exe```. First run: 
+When you proceed to stage2 (level 1 is stage0.exe) you receive a PE file named ```stage2.exe```. 
+
+First run: 
 
 ![alt tag](http://oi57.tinypic.com/2s9dcgg.jpg)
 
@@ -21,7 +23,7 @@ the first function:
 
 ![alt tag](http://oi62.tinypic.com/33lgrk0.jpg)
 
-Or, translated to C, in short:
+Or, translated to C language, in short:
 
 ```c
 printf("Enter password:");
@@ -30,8 +32,8 @@ func = f4028B0(0x5F048AF0);
 func(0x402450);
 ```
 
-As you can see the function asks for a password and then dynamically calculate an address for it to call with an hardcoded argument.
-Which is the ```SetUnhandledExceptionFilter``` WINAPI function, the function's description from MSDN:
+As you can see the function asks for a password and right after that it dynamically calculate an address for it to call with an hardcoded argument.
+Which revealed to be the ```SetUnhandledExceptionFilter```  - a WINAPI function, the function's description from MSDN:
 
 > Enables an application to supersede the top-level exception handler of each thread of a process.
 
@@ -39,18 +41,20 @@ Which is the ```SetUnhandledExceptionFilter``` WINAPI function, the function's d
 
 So, that means, as you can alreaday tell - the program sets the address ```0x402450``` as the function to be called if an exception occurs && the program is not being debugged.
 
-Okay, your is guess right - its an anti-debugging technique. 
-if we continue stepping the program we'll eventually exit the program. 
+Okay, your is guess right - this is an anti-debugging technique. 
+if we'll continue stepping the program - we'll eventually exit the program. 
 
 > **By the way, if you're debugging the program using [OllyDBG](http://ollydbg.de) and you see the crtlib functions and other functions as functions in the address-space of the program its because the program is statically linked. which makes it annoying to debug..**
 
 Let's continue, so as we figured out - we need to enter this function (at ```0x402450```) you can use any olly plugins to get around it or even patch the program to call ```0x402450``` directly after getting the user input.
 
-# 402450
+# 0x402450
+
+This function is basically the `main` code of the crackme, this is what we need to examine: 
 
 ![alt tag](http://oi60.tinypic.com/35l94jm.jpg)
 
-Translated to C: 
+Translated to C language (easier to understand): 
 
 ```c
 void f402450() {
@@ -97,15 +101,15 @@ void f402450() {
 	exit(1);
 }
 ```
-So as you can see, after looking at the beautiful looking C code (=]) the following happens: 
+So as you can see, after looking at the beautiful looking C code... the following happens: 
 
 1. A handle for a filename ```tmp0.X``` in ```wb``` mode
-2. Theres a loop that does some operations (inside ```stalin1``` & ```stalin2```, we'll get to it) on our input, combined with a blob data for **7168** times
+2. There's a loop that does some operations (inside ```stalin1``` & ```stalin2```, we'll get to it) on our input, combined with a blob data for **7168** times
 3. Then the file is closed and a pointer to ```SetErrorMode``` function is dynamically generated and then calls it with the parameter '1' in order to hide errors from the user.
 4. And then the program attempts to dynamically load (using ```LoadLibraryA```) the file ```tmp0.X``` and grabbing a pointer to the function ```GetProcAddress```.
 5. After that the file ```tmp0.X``` is deleted and (in short) the program attempts to call a function named ```qualify``` from tmp0.X.
 
-> I'm saving you the explanation about which functions does what and how the functions are dynamically generated because its long and not interesting.
+> I'm saving you the explanation about which functions does what and how the functions are dynamically generated because it's long and not interesting.
 
 # Meet Stalin
 
